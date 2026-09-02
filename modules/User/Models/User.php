@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Illuminate\Support\Facades\Storage;
-use App\Concerns\HasUuid;
+use Modules\Support\Concerns\HasUuid;
 use Modules\User\Enums\UserRoles;
 use Modules\User\Enums\UserStatuses;
 use Illuminate\Database\Eloquent\Builder;
