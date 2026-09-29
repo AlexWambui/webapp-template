@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Exception;
 use Modules\User\Enums\UserRoles;
+use Modules\User\Enums\UserStatuses;
 use Modules\User\Models\User;
 use Modules\User\Http\Requests\UserRequest;
 use Modules\User\Http\Resources\UserResource;
@@ -73,11 +74,18 @@ class UserController extends Controller
 
     public function create()
     {
-        return inertia('app/users/Create');
+        $this->authorize('create', User::class);
+
+        return inertia('app/users/Create', [
+            'role_options' => UserRoles::optionsFor(Auth::user()->role),
+            'status_options' => UserStatuses::options()
+        ]);
     }
 
     public function store(UserRequest $request)
     {
+        $this->authorize('create', User::class);
+
         try {
             DB::beginTransaction();
 
@@ -111,13 +119,19 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
+        $this->authorize('update', $user);
+
         return inertia('app/users/Edit', [
-            'user' => new UserResource($user)
+            'user' => new UserResource($user),
+            'role_options'   => UserRoles::optionsFor(Auth::user()->role),
+            'status_options' => UserStatuses::options(),
         ]);
     }
 
     public function update(UserRequest $request, User $user)
     {
+        $this->authorize('update', $user);
+
         try {
             DB::beginTransaction();
 
@@ -156,6 +170,8 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        $this->authorize('delete', $user);
+
         try {
             if (Auth::id() === $user->id) {
                 return back()->with([

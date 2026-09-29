@@ -27,4 +27,11 @@ enum UserStatuses: int
 
         return $labels;
     }
+
+    public static function options(): array
+    {
+        return collect(self::cases())
+            ->mapWithKeys(fn (self $r) => [$r->value => $r->label()])
+            ->all();
+    }
 }

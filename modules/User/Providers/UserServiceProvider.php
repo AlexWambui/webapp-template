@@ -4,6 +4,9 @@ namespace Modules\User\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Database\Seeders\DatabaseSeeder;
+use Illuminate\Support\Facades\Gate;
+use Modules\User\Models\User;
+use Modules\User\Policies\UserPolicy;
 
 class UserServiceProvider extends ServiceProvider
 {
@@ -15,5 +18,7 @@ class UserServiceProvider extends ServiceProvider
         //$this->mergeConfigFrom(__DIR__ . '/../config.php', 'user');
 
         $this->app->register(RouteServiceProvider::class);
+
+        Gate::policy(User::class, UserPolicy::class);
     }
 }

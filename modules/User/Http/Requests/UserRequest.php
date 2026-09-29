@@ -26,11 +26,20 @@ class UserRequest extends FormRequest
     public function rules(): array
     {
         $user = $this->route('user');
+        $auth_user = $this->user();
+        $is_super_admin = $auth_user?->role === UserRoles::SUPER_ADMIN;
+
+        $allowed_roles = $is_super_admin
+            ? array_column(UserRoles::cases(), 'value')
+            : array_values(array_filter(
+                array_column(UserRoles::cases(), 'value'),
+                fn($value) => $value !== UserRoles::SUPER_ADMIN->value
+            ));
 
         $rules = [
             'name' => ['required', 'string', 'max:200'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user?->id)],
-            'role' => ['required', 'integer', 'in:' . implode(',', array_column(UserRoles::cases(), 'value'))],
+            'role' => ['required', Rule::in($allowed_roles)],
             'status' => ['required', 'integer', 'in:' . implode(',', array_column(UserStatuses::cases(), 'value'))],
         ];
 
@@ -52,6 +61,7 @@ class UserRequest extends FormRequest
             'position.required_if' => 'Position is required for cashier accounts',
             'company_name.required_if' => 'Company name is required for supplier accounts',
             'payment_terms.required_if' => 'Payment terms are required for supplier accounts',
+            'role.in' => 'You are not allowed to assign this role',
         ];
     }
 
