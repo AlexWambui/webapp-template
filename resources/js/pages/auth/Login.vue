@@ -11,7 +11,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { register } from '@/routes';
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
-import PasskeyVerify from '@/components/PasskeyVerify.vue';
+// import PasskeyVerify from '@/components/PasskeyVerify.vue';
 
 defineOptions({
     layout: {
@@ -36,7 +36,7 @@ defineProps<{
         {{ status }}
     </div>
 
-    <PasskeyVerify />
+    <!-- <PasskeyVerify /> -->
 
     <Form
         v-bind="store.form()"
